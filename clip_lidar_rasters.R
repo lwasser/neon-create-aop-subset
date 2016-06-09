@@ -13,9 +13,7 @@ library(rgeos)
 # specify the working DIR
 
 # setwd("~/Documents/data/1_spectrometerData/Teakettle")
-setwd("H:\\1_Teakettle\\new_subset\\lidar")
-
-
+setwd("H:\\1_Data-Institute-subsets\\")
 
 ## Check Extent Function ####
 # this function below checks to see if a raster falls within a spatial extent
@@ -86,73 +84,117 @@ get_AOP_tiles <- function(tileDir, clipExtent, outFileName){
 
 ### run code ####
 
-# the function below if used with lapply could potentially 
-# or use mapply to work through a list of paths and associated outputs
-# dataDir <- "P:\\Distros\\1.3a+WaveForm_V1.1a\\1.3a\\D17\\TEAK\\2013\\TEAK_L1\\TEAK_Camera\\Images"
-
-# tristan updated the CHM data -- make sure it is on the server ! 
-# fixed CHM data
-# dataDir <- "Y:\\users\\tgoulden\\TEAK\\L3\\DiscreteLidar\\CanopyHeightModelGtif"
-# create list of output dirs to parse through
-
-
-# this is where the data are stored in separate directories
-# NOTE: if you use file.path then it will adjust the slashes to pc vs mac!
-dataDir <- file.path("Users","lwasser","Documents")
-# P:\\Distros\\1.3a+WaveForm_V1.1a\\1.3a\\D17\\TEAK\\2013\\TEAK_L3\\TEAK_Lidar\\
-#dataDir <- file.path("P:","Distros","1.3a+WaveForm_V1.1a",
-#                     "1.3a","D17",
-#                     "TEAK","2013","TEAK_L3",
-#                     "TEAK_Lidar")
-
-
 #dataDir <- file.path("P:","Distros","1.3a+WaveForm_V1.1a",
 #                     "1.3a","D17",
 #                     "SJER","2013","SJER_L3",
 #                     "SJER_Lidar")
 
 
+
+# ##### OSBS Clip
+# # the name of the site
+# site <- "OSBS"
+# domain <- "D3"
+# fullDomain <- "D03-Florida"
+# level <- "L3"
+# dataType <- "lidar"
+# level <- paste0(site,"_L3")
+# year <- "2014"
+# productType <- paste0(site,"_Lidar")
+
+# ##### JERC Clip
+# # the name of the site
+# site <- "JERC"
+# domain <- "D3"
+# fullDomain <- "D03-Florida"
+# level <- "L3"
+# dataType <- "lidar"
+# level <- paste0(site,"_L3")
+# year <- "2014"
+# productType <- paste0(site,"_Lidar")
+# clipFile <- "JERC_crop"
+
+##### HARV Clip
 # the name of the site
-site <- "SJER"
+# site <- "HARV"
+# domain <- "D1"
+# fullDomain <- "D01-Massachusetts"
+# level <- "L3"
+# dataType <- "lidar"
+# level <- paste0(site,"_L3")
+# year <- "2014"
+# productType <- paste0(site,"_Lidar")
+# clipFile <- "HARV_crop"
+
+##### SJER Clip
+# # the name of the site
+# site <- "SJER"
+# domain <- "D17"
+# fullDomain <- "D03-Florida"
+# level <- "L3"
+# #level <- "L2"
+#  dataType <- "Lidar"
+# #dataType <- "Spectrometer"
+# level <- paste0(site, "_",level)
+# year <- "2013"
+# productType <- paste0(site, "_",dataType)
+
+##### TEAK Clip
+# the name of the site
+site <- "TEAK"
 domain <- "D17"
+fullDomain <- paste0(domain,"-California")
 level <- "L3"
 dataType <- "lidar"
-level <- "SJER_L3"
+level <- paste0(site,"_L3")
 year <- "2013"
-dataDir <- "SJER_Lidar"
+productType <- paste0(site,"_Lidar")
+clipFile <- paste0(site,"_crop")
 
 
-dataDir <- file.path("P:","Distros","1.3a+WaveForm_V1.1a",
-                     "1.3a", domain,
-                     site, year, level,
-                     dataDir)
+#### Distro Path Location
+# 
 
-# dataDir <- "/Users/lwasser/Documents/data/1_data-institute-2016/Teakettle/may1_subset"
+#### Distro Path Location
+# 
+driveLetter <- "P:"
+theDir <- "Distros"
+distroVersion <- "1.4a_No_Waveform"
 
 
+####
+dataDir <- file.path(driveLetter, theDir, distroVersion, domain,
+                     site, year, level, productType)
 
 
 ## Get Clip File ####
+# clipFile <- "TEAK_crop"
+# clipFile <- "soap_clip_extent"
+clipFile <- "sjer_clip_extent"
+# clipFile <- "OSBS_crop"
 
-# clipFile <- "teakettle_clip"
-#clipFile <- "teakettleClip_2"
-clipFile <- "soap_clip_extent"
 # specify the path to the clip file
-clipFilePath <- file.path("H:","1_Teakettle", site)
+clipFilePath <- file.path("H:","1_Data-Institute-subsets",fullDomain, site, "vector_data")
 
 
 # where you want to save the outputs
 # outputDir <- "/Users/lwasser/Documents/data/1_data-institute-2016/Teakettle/may1_subset/subset/lidar"
-outputDir <- file.path("H:","1_Teakettle", site, year, dataType)
-
+outputDir <- file.path("H:","1_Data-Institute-subsets", fullDomain, site, year, tolower(dataType))
 
 # automate parsing through all lidar subdirs to grab data
 tileDir <- list.dirs(dataDir,
                      full.names = TRUE, 
                      recursive = FALSE)
 
+# just for SJER - comment out after this run
+
+#dataDir <- "X:/flight/FullSite/2013/FullSite/D17/2013_SJER_1/L3/DiscreteLidar/CanopyHeightModel_gtif"
+
+#outputDir <- file.path("H:","1_Teakettle", SJER)
+#tileDir <- dataDir
+
 # create a list of output filenames
-outNames <- paste0(clipFilePath, "/2013/",dataType,"/", site, "_", dataType, basename(tileDir),".tif")
+outNames <- paste0("H:/1_Data-Institute-subsets/",fullDomain,"/",site, "/",year,"/",dataType,"/", site, "_", dataType, basename(tileDir),".tif")
 
 
 
@@ -164,12 +206,22 @@ clipExtent <- readOGR(clipFilePath, clipFile)
 # extent from each directory specified in the list. it should then
 # write an output gtif
 
-mapply(get_AOP_tiles, tileDir, 
-       clipExtent = clipExtent, 
-       outFileName = outNames)
+#mapply(get_AOP_tiles, tileDir, 
+#       clipExtent = clipExtent, 
+#       outFileName = outNames)
 
 # mapply is still acting odd so using a for loop
 
 for(i in 1:length(tileDir)){
   get_AOP_tiles(tileDir = tileDir[i], outFileName = outNames[i], clipExtent=clipExtent)
-  }
+}
+
+# rast.mosaic.round <- trunc(rast.mosaic, prec=4)
+
+#writeRaster(rast.mosaic.round,
+#            filename="rounded.tif",
+#            format="GTiff",
+#            options="COMPRESS=LZW",
+#            overwrite = TRUE,
+#            NAflag = -9999,
+#            datatype="FLT4S")
