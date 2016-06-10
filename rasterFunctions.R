@@ -19,25 +19,31 @@ checkExtent <- function(aRaster, clipShp){
 rastInClip <- function(rasterFile,clipShp) {
   # rasterFile <- "/Volumes/data_dr/teakettle/DTM/2013_TEAK_1_326000_4103000_DTM.tif"
   # rasterFile <- rasterList[221]
-  recordRaster <- NA
+  # recordRaster <- NA
   suppressWarnings(aRaster <- raster(rasterFile))
   # for now skip rotated lines
   if(rotated(aRaster)){
-    print("raster rotation detected")
-    # remove rotation
-    aRaster <- rectify(aRaster, res=1, method="ngb")
-    crs(aRaster) <- crs(clipShp)
+    print("raster rotation detected - skipping")
+    # remove rotation - because this doesn't currently work, commenting it out
+    # aRaster2 <- rectify(aRaster, res=1, method="ngb")
+    # crs(aRaster2) <- crs(clipShp)
     # return(recordRaster)
-  }
-  #} else{
+  #}
+  }else{
+  if(compareCRS(aRaster,clipShp)==FALSE){
+    #reproject if the data aren't in the same projection
+    print("fixing projection of clip extent to match raster data")
+    clipShp <- spTransform(clipShp, crs(aRaster))
+  } 
+    
   if (checkExtent(aRaster, clipShp)) {
     # recordRaster <- rasterFile
     # crop raster
-    aRaster <- crop(aRaster,clipShp)
+    aRaster <- crop(aRaster, clipShp)
     return(aRaster)
   }
    # return(recordRaster)  
-  #}
+  }
 }
 
 
@@ -67,6 +73,7 @@ get_AOP_tiles <- function(rasterList, clipExtent, outFileName){
   # mosaic rasters
   # note removed () from the function max call for windows
   finalList$fun <- max
+  finalList$tolerance <- .5
   rast.mosaic <- do.call(mosaic, finalList)
   # plot(rast.mosaic)
   
@@ -81,6 +88,7 @@ get_AOP_tiles <- function(rasterList, clipExtent, outFileName){
               overwrite = TRUE,
               NAflag = -9999,
               datatype="FLT4S") # ensure it's writing to 32 bit
+  
   # for those who want to plot the final raster to check it out
   # return(rast.mosaic)
 }

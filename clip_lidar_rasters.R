@@ -116,15 +116,14 @@ get_AOP_tiles <- function(tileDir, clipExtent, outFileName){
 
 ##### HARV Clip
 # the name of the site
-# site <- "HARV"
-# domain <- "D1"
-# fullDomain <- "D01-Massachusetts"
-# level <- "L3"
-# dataType <- "lidar"
-# level <- paste0(site,"_L3")
-# year <- "2014"
-# productType <- paste0(site,"_Lidar")
-# clipFile <- "HARV_crop"
+site <- "HARV"
+domain <- "D01"
+fullDomain <- "D01-Massachusetts"
+level <- "L3"
+dataType <- "lidar"
+level <- paste0(site,"_L3")
+year <- "2014"
+productType <- paste0(site,"_Lidar")
 
 ##### SJER Clip
 # # the name of the site
@@ -141,15 +140,14 @@ get_AOP_tiles <- function(tileDir, clipExtent, outFileName){
 
 ##### TEAK Clip
 # the name of the site
-site <- "TEAK"
-domain <- "D17"
-fullDomain <- paste0(domain,"-California")
-level <- "L3"
-dataType <- "lidar"
-level <- paste0(site,"_L3")
-year <- "2013"
-productType <- paste0(site,"_Lidar")
-clipFile <- paste0(site,"_crop")
+# site <- "TEAK"
+# domain <- "D17"
+# fullDomain <- paste0(domain,"-California")
+# level <- "L3"
+# dataType <- "lidar"
+# level <- paste0(site,"_L3")
+# year <- "2013"
+# productType <- paste0(site,"_Lidar")
 
 
 #### Distro Path Location
@@ -167,14 +165,10 @@ dataDir <- file.path(driveLetter, theDir, distroVersion, domain,
                      site, year, level, productType)
 
 
-## Get Clip File ####
-# clipFile <- "TEAK_crop"
-# clipFile <- "soap_clip_extent"
-clipFile <- "sjer_clip_extent"
-# clipFile <- "OSBS_crop"
-
+# clip file name
+clipFile <- paste0(site,"_crop")
 # specify the path to the clip file
-clipFilePath <- file.path("H:","1_Data-Institute-subsets",fullDomain, site, "vector_data")
+clipFilePath <- file.path("H:","1_Data-Institute-subsets","NEONdata",fullDomain, site, "vector_data")
 
 
 # where you want to save the outputs
@@ -194,7 +188,10 @@ tileDir <- list.dirs(dataDir,
 #tileDir <- dataDir
 
 # create a list of output filenames
-outNames <- paste0("H:/1_Data-Institute-subsets/",fullDomain,"/",site, "/",year,"/",dataType,"/", site, "_", dataType, basename(tileDir),".tif")
+outNames <- paste0("H:/1_Data-Institute-subsets/NEONdata/",fullDomain,"/",site, 
+                   "/",year,"/",dataType,"/", 
+                   site, "_", dataType, 
+                   basename(tileDir),".tif")
 
 
 

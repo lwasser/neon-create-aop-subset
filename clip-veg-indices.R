@@ -16,49 +16,42 @@ source("rasterFunctions.R")
 # site <- "SJER"
 # domain <- "D17"
 # fullDomain <- "D17-California"
-# level <- "L2"
-# dataType <- "Spectrometer"
-# level <- paste0(site, "_",level)
 # year <- "2013"
-# productType <- paste0(site, "_",dataType)
-# dataProduct <- "veg_index"
-# # Clip Files
-# clipFile <- "sjer_clip_extent"
 
-##### SJER Clip
+##### TEAK Clip
 # # the name of the site
 # site <- "TEAK"
 # domain <- "D17"
 # fullDomain <- "D17-California"
-# level <- "L2"
-# dataType <- "Spectrometer"
-# level <- paste0(site, "_",level)
 # year <- "2013"
-# productType <- paste0(site, "_",dataType)
-# dataProduct <- "veg_index"
-# # Clip Files
-# clipFile <- "TEAK_crop"
 
-# ##### SJER Clip
+# ##### SOAP Clip
 # # # the name of the site
 # site <- "SOAP"
 # domain <- "D17"
 # fullDomain <- "D17-California"
-# level <- "L2"
-# dataType <- "Spectrometer"
-# level <- paste0(site, "_",level)
 # year <- "2013"
-# productType <- paste0(site, "_",dataType)
-# dataProduct <- "veg_index"
-# # Clip Files
-# clipFile <- paste0(site,"_crop")
 
-##### SJER Clip
+##### JERC Clip
 # # the name of the site
-site <- "JERC"
+#site <- "JERC"
+#domain <- "D03"
+#fullDomain <- paste0(domain,"-Florida")
+#year <- "2014"
+
+### OSBS Clip
+site <- "OSBS"
 domain <- "D03"
 fullDomain <- paste0(domain,"-Florida")
 year <- "2014"
+
+##### HARV Clip
+# the name of the site
+# site <- "HARV"
+# domain <- "D01"
+# fullDomain <- paste0(domain,"-Massachusetts")
+# year <- "2014"
+
 
 #### Data Product Inputs (consistent across sites)
 level <- "L2"
