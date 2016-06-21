@@ -116,14 +116,14 @@ get_AOP_tiles <- function(tileDir, clipExtent, outFileName){
 
 ##### HARV Clip
 # the name of the site
-site <- "HARV"
-domain <- "D01"
-fullDomain <- "D01-Massachusetts"
-level <- "L3"
-dataType <- "lidar"
-level <- paste0(site,"_L3")
-year <- "2014"
-productType <- paste0(site,"_Lidar")
+# site <- "HARV"
+# domain <- "D01"
+# fullDomain <- "D01-Massachusetts"
+# level <- "L3"
+# dataType <- "lidar"
+# level <- paste0(site,"_L3")
+# year <- "2014"
+# productType <- paste0(site,"_Lidar")
 
 ##### SJER Clip
 # # the name of the site
@@ -132,11 +132,7 @@ productType <- paste0(site,"_Lidar")
 # fullDomain <- "D03-Florida"
 # level <- "L3"
 # #level <- "L2"
-#  dataType <- "Lidar"
-# #dataType <- "Spectrometer"
-# level <- paste0(site, "_",level)
 # year <- "2013"
-# productType <- paste0(site, "_",dataType)
 
 ##### TEAK Clip
 # the name of the site
@@ -144,10 +140,20 @@ productType <- paste0(site,"_Lidar")
 # domain <- "D17"
 # fullDomain <- paste0(domain,"-California")
 # level <- "L3"
-# dataType <- "lidar"
-# level <- paste0(site,"_L3")
 # year <- "2013"
-# productType <- paste0(site,"_Lidar")
+
+##### SOAP Clip
+# the name of the site
+site <- "SOAP"
+domain <- "D17"
+fullDomain <- paste0(domain,"-California")
+level <- "L3"
+year <- "2013"
+
+## variables that won't change
+dataType <- "lidar"
+level <- paste0(site,"_", level)
+productType <- paste0(site,"_Lidar")
 
 
 #### Distro Path Location
