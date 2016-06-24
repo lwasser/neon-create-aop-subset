@@ -116,14 +116,15 @@ get_AOP_tiles <- function(tileDir, clipExtent, outFileName){
 
 ##### HARV Clip
 # the name of the site
-# site <- "HARV"
-# domain <- "D01"
-# fullDomain <- "D01-Massachusetts"
-# level <- "L3"
-# dataType <- "lidar"
-# level <- paste0(site,"_L3")
-# year <- "2014"
-# productType <- paste0(site,"_Lidar")
+site <- "HARV"
+domain <- "D01"
+fullDomain <- "D01-Massachusetts"
+level <- "L3"
+dataType <- "lidar"
+level <- paste0(site,"_L3")
+year <- "2014"
+productType <- paste0(site,"_Lidar")
+clipFile <- "HARV_cropProv"
 
 ##### SJER Clip
 # # the name of the site
@@ -144,15 +145,14 @@ get_AOP_tiles <- function(tileDir, clipExtent, outFileName){
 
 ##### SOAP Clip
 # the name of the site
-site <- "SOAP"
-domain <- "D17"
-fullDomain <- paste0(domain,"-California")
-level <- "L3"
-year <- "2013"
+# site <- "SOAP"
+# domain <- "D17"
+# fullDomain <- paste0(domain,"-California")
+# level <- "L3"
+# year <- "2013"
 
 ## variables that won't change
 dataType <- "lidar"
-level <- paste0(site,"_", level)
 productType <- paste0(site,"_Lidar")
 
 
@@ -172,7 +172,7 @@ dataDir <- file.path(driveLetter, theDir, distroVersion, domain,
 
 
 # clip file name
-clipFile <- paste0(site,"_crop")
+#clipFile <- paste0(site,"_crop")
 # specify the path to the clip file
 clipFilePath <- file.path("H:","1_Data-Institute-subsets","NEONdata",fullDomain, site, "vector_data")
 
