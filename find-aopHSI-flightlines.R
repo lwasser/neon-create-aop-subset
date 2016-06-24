@@ -156,27 +156,59 @@ sapply(h5.files, write_shapefile_bound,
 ##################### Run Find Flightlines that Intersect With Spatial Extent ##############
 #
 # initalize counter and list object
-recordRaster <- NA
-i <- 0
 
-# the loop below returns a LIST of the files that have overlapping extent
-for(afile in h5.files){
-  # get extent of h5 file
-  h5Extent <- create_extent(afile)
-  # turn into polygon extent object
-  h5.poly <- as(h5Extent, "SpatialPolygons")
-  # this is assuming both are in the same CRS!
-  crs(h5.poly) <-  crs(clip.polygon)
-  
-  # check to see if the polygons overlap
-  if(gIntersects(h5.poly, clip.polygon)){
-    i <- i+1
-    recordRaster[i] <- afile
-  } else {
-    print("not in")
-  }
+# h5.files: a list of h5 files (full paths) to review
+# clip.polygon: the clipping polygon spatial object that you want to find the h5 files that intersect it 
+
+find_intersect_h5 <- function(h5.files, clip.polygon){
+  recordRaster <- NA
+  i <- 0
+  # the loop below returns a LIST of the files that have overlapping extent
+  for(afile in h5.files){
+    # get extent of h5 file
+    h5Extent <- create_extent(afile)
+    # turn into polygon extent object
+    h5.poly <- as(h5Extent, "SpatialPolygons")
+    # this is assuming both are in the same CRS!
+    crs(h5.poly) <-  crs(clip.polygon)
+    
+    # check to see if the polygons overlap
+    if(gIntersects(h5.poly, clip.polygon)){
+      i <- i+1
+      recordRaster[i] <- afile
+    } else {
+      print("not in")
+    }
+  } 
+  return(recordRaster)
 }
 
-# view the list of h5 files that intersect with the extent
-recordRaster
+
+## Loop through all of the H5 files and return a list of what's "in"
+intersect_files <- find_intersect_h5(h5.files, 
+                                     clip.polygon)
+
+
+################### Next -- see if you can loop through polygons ####
+
+# for this to work the shapefile has to have an "Id" field with numbers 1-x
+soap.plots <- readOGR("exports/SOAP_subsets_poly/", "SOAP_subsets")
+
+#clip.file <- soap.plots[soap.plots$Id == 1,]
+final.files <- vector("list", length(soap.plots))
+
+# This for loop generates a list of flightlines that intersect each polygon in a 
+# shapefile. Note that the spatial object needs an Id field that is numbered 1-n
+for(i in 1:length(soap.plots)){
+  clip.file <- soap.plots[soap.plots$Id == i,]
+  final.files[[i]] <- find_intersect_h5(h5.files, 
+                                 clip.file)
+  }
+
+
+first.box <- soap.plots[soap.plots$Id == 1,]
+first.box
+
+summary(soap.plots$Id)
+
 
