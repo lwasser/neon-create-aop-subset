@@ -32,7 +32,7 @@ checkExtent <- function(aRaster, clipShp){
 ## This function checks to see if a raster falls within the extent
 ## if it's in the extent, it then records the name of the file
 
-rastInClip <- function(rasterFile,clipShp) {
+rastInClip <- function(rasterFile, clipShp) {
   # rasterFile <- "/Volumes/data_dr/teakettle/DTM/2013_TEAK_1_326000_4103000_DTM.tif"
   # rasterFile <- rasterList[221]
   recordRaster <- NA
