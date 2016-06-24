@@ -131,6 +131,11 @@ write_shapefile_bound <- function(f, shpDir, proj4Str){
   outName <- gsub(pattern = ".h5",
                   x = basename(f),
                   replacement = "")
+  
+  # create the output directory we want to use if it doesn't yet exist
+  ifelse(!dir.exists(file.path(shpDir)), 
+	   dir.create(file.path(shpDir), showWarnings = TRUE))
+  
   writeOGR(sp.obj, 
            shpDir, #path to export to
            outName,
