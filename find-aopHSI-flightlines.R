@@ -5,7 +5,7 @@
 ###
 
 # library(devtools)
-## install from github
+# install from github
 # install_github("lwasser/neon-aop-package/neonAOP")
 
 
@@ -26,116 +26,135 @@ library(neonAOP)
 
 ### TEAK Clip
 #the name of the site
-site <- "TEAK"
-domain <- "D17"
-fullDomain <- "D17-California"
-level <- "L1"
-dataType <- "Spectrometer"
-level <- paste0(site,"_L1")
-year <- "2013"
-productType <- paste0(site,"_", dataType)
-dataProduct <- "Reflectance"
-clipFile <- "TEAK_plot"
-
-# ##### OSBS Clip
-# # the name of the site
-# site <- "OSBS"
-# domain <- "D3"
-# fullDomain <- "D03-Florida"
-# level <- "L1"
-# dataType <- "lidar"
-# year <- "2014"
-# dataProduct <- "Reflectance"
-
-
-### SOAP Clip
-# # the name of the site
-# site <- "SOAP"
+# site <- "TEAK"
 # domain <- "D17"
 # fullDomain <- "D17-California"
-# level <- "L1"
-# dataType <- "Spectrometer"
-# level <- paste0(site,"_L1")
 # year <- "2013"
-# productType <- paste0(site,"_", dataType)
 
-# ##### OSBS Clip
+#### OSBS Clip
 # # the name of the site
 # site <- "OSBS"
-# domain <- "D3"
+# domain <- "D03"
 # fullDomain <- "D03-Florida"
-# level <- "L1"
-# dataType <- "lidar"
-# level <- paste0(site,"_L1")
 # year <- "2014"
-# productType <- paste0(site,"_Spectrometer")
-# dataProduct <- "Reflectance"
 
-### SOAP Clip
+## SOAP Clip
 # the name of the site
-# site <- "SOAP"
-# domain <- "D17"
-# fullDomain <- "D17-Florida"
-# level <- "L1"
-# dataType <- "Spectrometer"
-# level <- paste0(site,"_L1")
-# year <- "2013"
-# productType <- paste0(site,"_", dataType)
-# dataProduct <- "Reflectance"
+site <- "SOAP"
+domain <- "D17"
+fullDomain <- "D17-California"
+year <- "2013"
 
 ### SJER clip
 # site <- "SJER"
 # domain <- "D17"
 # fullDomain <- "D17-California"
-# level <- "L1"
-# dataType <- "Spectrometer"
-# level <- paste0(site, "_L1")
 # year <- "2013"
-# productType <- paste0(site,"_", dataType)
 
-#####
-dataProduct <- "Reflectance"
-productType <- paste0(site,"_Spectrometer")
-level <- paste0(site,"_L1")
+#### Identify where the shapefile is located on your hard drive
+### NOTE: change these to the polygon that contains your crop extent
 
-#clipFile <- paste0(site,"_crop")
+# define clip file name (this could be a plot)
+clipFile <- paste0(site, "_crop")
+# import shapefile
+clipFilePath <- file.path("neonData", fullDomain, site, "vector_data")
 
+##### Define your hard drive path. Mac's often use "volumes" for an external hard drive
+##### Windows often use a letter "D:" etc
 drivePath <- "Volumes"
-driveName <- "AOP-NEON1-4"
+driveName <- "My Passport"
+
+########## Reflectance data variables based upon the hard drive structure
+dataProduct <- "Reflectance"
+dataType <- "Spectrometer"
+level <- paste0(site,"_L1")
+productType <- paste0(site,"_", dataType)
+
+
+
+### Define the data directory where the h5 files are stored
 
 dataDir <- file.path(drivePath, driveName,
                       domain,
                       site, year, level, productType, dataProduct)
+
+# you only need this is you are using a mac
 dataDir <- paste0("/", dataDir)
 # get a list of all files in the dir
+# if this variable returns no values, that means your dataDir is wrong OR
+# the data dir doesn't have any information in it.
 h5.files <- list.files(dataDir, pattern = '\\.h5$', full.names = TRUE)
 
 
-#### Import shapefile ####
-# import shapefile
-clipFilePath <- file.path("neonData", fullDomain, site, "vector_data")
-#clipFile <- paste0(site,"_crop")
+#### Import shapefile / clipping spatial object ####
+# note this could be replaced with a spatial polygon rather than importing a shapefile
 clip.polygon <- readOGR(clipFilePath,
                         clipFile)
 
+####################### Check Extent Function ###########################
 
-#####
-## functions
-## Check Extent Function ####
-# this function below checks to see if a raster falls within a spatial extent
-# inputs: raster file to check, clipShp (spatial )
-checkExtent <- function(aRaster, clipShp){
+# this function checks to see if a raster falls within a spatial extent
+# inputs: 
+# h5.extent: the spatial extent of the h5 file
+# clipShp: a spatial polygon object
+checkExtent <- function(h5.extent, clipShp){
   # create polygon extent assign CRS to extent 
   h5.extent.sp <- as(h5.extent, "SpatialPolygons")
+  
   # note this is ASSUMING both the extent and the h5 file are in the same CRS
   crs(rasterExtPoly) <-  crs(clip.polygon)
-
+  
   # check to see if the polygons overlap
   # return a boolean (1= the raster contains pixels within the extent, 0 it doesn't)
   return(gIntersects(h5.extent.sp, clip.polygon))
 }
 
+################ Write Extent Shapefiles Function ########################
 
+# Inputs:
+# f: a path to an h5 file that you'd like an extent for.
+# shpDir: path to the output directory where you want to store the data
+# projf4Str: the proj4 formated string of the CRS that the H5 file is in.
+# NOTE: proj4 NEEDS to be in the same proj as your h5 file
+write_shapefile_bound <- function(f, shpDir, proj4Str){
+  # create shapefileName
+  # output
+  h5.extent <- create_extent(f)
+  # create polygon extent assign CRS to extent 
+  h5.extent.sp <- as(h5.extent, "SpatialPolygons")
+  # create data.frame, add the name of the file to the shapefile
+  sp.df <- data.frame(id=basename(f))
+  sp.obj <- SpatialPolygonsDataFrame(h5.extent.sp, sp.df)
+  # assign CRS
+  crs(sp.obj) <- CRS(proj4Str)
+  # create shapefile output name
+  outName <- gsub(pattern = ".h5",
+                  x = basename(f),
+                  replacement = "")
+  writeOGR(sp.obj, 
+           shpDir, #path to export to
+           outName,
+           driver="ESRI Shapefile",
+           overwrite_layer = TRUE)
+}
+
+##################### Run Export Polygon Boundary for Each Flightline ##############
+
+# export extent polygon for all flightlines
+proj4Str <- "+proj=utm +zone=11 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs"
+shpDir <- paste0("exports/", site, "_flightLines")
+
+sapply(h5.files, write_shapefile_bound,
+       proj4Str = proj4Str,
+       shpDir = shpDir)
+
+#################### End Export Polygon Boundary for Each Flightline ###########
+
+
+
+
+##################### Run Find Flightlines that Intersect With Spatial Extent ##############
+#
 # initalize counter and list object
 recordRaster <- NA
 i <- 0
@@ -158,5 +177,6 @@ for(afile in h5.files){
   }
 }
 
+# view the list of h5 files that intersect with the extent
 recordRaster
 
