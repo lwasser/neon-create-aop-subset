@@ -14,6 +14,7 @@ library(sp)
 library(rgeos)
 library(rhdf5)
 library(neonAOP)
+library(rgdal)
 
 ########## Inputs #####
 
@@ -195,7 +196,8 @@ intersect_files <- find_intersect_h5(h5.files,
 soap.plots <- readOGR("exports/SOAP_subsets_poly/", "SOAP_subsets")
 
 #clip.file <- soap.plots[soap.plots$Id == 1,]
-final.files <- vector("list", length(soap.plots))
+final.files <- vector("list", 
+                      length(soap.plots))
 
 # This for loop generates a list of flightlines that intersect each polygon in a 
 # shapefile. Note that the spatial object needs an Id field that is numbered 1-n
